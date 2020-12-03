@@ -12,13 +12,18 @@ class GHSearch extends Component {
     this.setState({ searchValue: e.target.value })
   }
 
-  async performSearch(e) {
-    const q = this.state.searachValue
+  async performSearch() {
+    const q = this.state.searchValue
     let response = await axios.get(`https://api.github.com/search/users?q=${q}`)
     this.setState({ gitHubUsers: response.data.items })
   }
 
   render() {
+    let displayUsers = this.state.gitHubUsers.map(user => {
+      return (
+        <li key={user.id}>{user.login}</li>
+      )
+    })
     return (
       <>
         <Input
@@ -27,12 +32,14 @@ class GHSearch extends Component {
           placeholder="Input GH username"
           onChange={(e) => this.setInputValue(e)} />
         <Button
-          onClick={(e) => this.performSearch(e)}
+          onClick={() => this.performSearch()}
           data-cy="search-button"
         >Search
       </Button>
         <div data-cy="search-results">
-
+          <ul>
+            {displayUsers}
+          </ul>
         </div>
       </>
     )
